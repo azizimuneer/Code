@@ -1,0 +1,10 @@
+tls:
+  enabled: true
+  fullchain: |
+   INSERTSSLCHAIN
+  privkey: |
+INSERTSSLPRIVKEY
+  cacerts: |
+INSERTCACERT
+
+
