@@ -1,0 +1,81 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kafka-tls
+  namespace: {{ namespace_name }}
+spec:
+  secretName: kafka-tls
+  additionalOutputFormats:
+    - type: CombinedPEM
+    - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: kafka.{{ namespace_name }}.cdm.gov
+  dnsNames:
+    - "kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-0.kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-1.kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-2.kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-3.kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-4.kafka.{{ namespace_name }}.svc.cluster.local"
+    - "kafka-5.kafka.{{ namespace_name }}.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kraftcontroller-tls
+  namespace: {{ namespace_name }}
+spec:
+  secretName: kraftcontroller-tls
+  additionalOutputFormats:
+    - type: CombinedPEM
+    - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: kraftcontroller.{{ namespace_name }}.cdm.gov
+  dnsNames:
+    - "kraftcontroller-0.kraftcontroller.{{ namespace_name }}.svc.cluster.local"
+    - "kraftcontroller-1.kraftcontroller.{{ namespace_name }}.svc.cluster.local"
+    - "kraftcontroller-2.kraftcontroller.{{ namespace_name }}.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mds-tls
+  namespace: {{ namespace_name }}
+spec:
+  secretName: mds-tls
+  additionalOutputFormats:
+    - type: CombinedPEM
+    - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: mds.{{ namespace_name }}.cdm.gov
+  dnsNames:
+    - "*.kafka.{{ namespace_name }}.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: schemaregistry-tls
+  namespace: {{ namespace_name }}
+spec:
+  secretName: schemaregistry-tls
+  additionalOutputFormats:
+    - type: CombinedPEM
+    - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: schemaregistry.{{ namespace_name }}.cdm.gov
+  dnsNames:
+    - "schemaregistry.{{ namespace_name }}.svc.cluster.local"
+    - "schemaregistry-0.schemaregistry.{{ namespace_name }}.svc.cluster.local"
+    - "schemaregistry-1.schemaregistry.{{ namespace_name }}.svc.cluster.local"

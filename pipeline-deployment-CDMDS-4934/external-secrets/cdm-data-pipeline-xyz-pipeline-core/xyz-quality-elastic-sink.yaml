@@ -1,0 +1,44 @@
+
+
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: xyz-quality-elastic-sink
+  namespace: xyz-quality-elastic-sink
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: xyz-quality-elastic-sink
+    creationPolicy: Owner
+  data:
+  - secretKey: ELASTICSEARCH_API_KEY
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: ELASTICSEARCH_API_KEY
+  - secretKey: ELASTIC_CA_CERT
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: ELASTIC_CA_CERT
+  - secretKey: ELASTICSEARCH_QUALITY_API_KEY
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: ELASTICSEARCH_QUALITY_API_KEY
+  - secretKey: KAFKA_CA_CERT_ENCODED
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: KAFKA_CA_CERT_ENCODED
+  - secretKey: ELASTIC_QUALITY_CA_CERT
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: ELASTIC_QUALITY_CA_CERT
+  - secretKey: KAFKA_USERNAME
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: KAFKA_QUALITYELASTICSINK_USERNAME
+  - secretKey: KAFKA_PASSWORD
+    remoteRef:
+      key: /cdm-data-pipeline/xyz/pipeline-core
+      property: KAFKA_QUALITYELASTICSINK_PASSWORD

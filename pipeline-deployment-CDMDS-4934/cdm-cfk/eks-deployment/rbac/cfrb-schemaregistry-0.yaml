@@ -1,0 +1,13 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: schemaregistry-0
+  namespace: cdm-kafka
+spec:
+  clustersScopeByIds:
+    schemaRegistryClusterId: id_schemaregistry_cdm-kafka
+  principal:
+    name: sr
+    type: user
+  role: SystemAdmin
+

@@ -1,0 +1,51 @@
+{{- if or .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled .Values.xyz_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.name }}-cron
+  namespace: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.namespace }}
+  annotations:
+    {{- toYaml .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.annotations | nindent 4 }}
+spec:
+  schedule: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.name }}
+        spec:
+          {{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.serviceAccount.enabled }}
+          serviceAccountName: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.serviceAccount.name }}
+          {{- end }}
+          restartPolicy: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.restartPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.fsGroup }}
+          imagePullSecrets:
+            {{- range .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.imagePullSecrets }}
+            - name: {{ .name }}
+            {{- end }}
+          containers:
+            - name: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.name }}
+              image: {{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.image.enabled | default false }} {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.image.repository }}:{{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.image.tag }}{{- else }} {{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}{{- end }}
+              securityContext:
+                runAsUser: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.runAsUser }}
+                runAsGroup: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.runAsGroup }}
+                privileged: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.cronJob.securityContext.privileged }}
+              args:
+                {{- range .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.commandArgs }}
+                - {{ . | quote }}
+                {{- end }}
+              envFrom:
+                {{- include "xyz_axonius_connector.envVars" . | nindent 16 }}
+              {{- if not .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled }}
+              resources:
+                limits:
+                  cpu: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.resources.limits.cpu }}
+                  memory: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.resources.limits.memory }}
+              {{- end }}
+{{- end }}
+{{- end }}

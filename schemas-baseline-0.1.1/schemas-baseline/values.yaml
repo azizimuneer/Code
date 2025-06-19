@@ -1,0 +1,254 @@
+schemas:
+  - schemaId: abc-cdm-csm
+    namespace: cdm-kafka
+    schema: |
+     {
+        "$schema": "http://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+  - schemaId: abc-cdm-hwam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-cdm-org
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-cdm-quality
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-cdm-sb
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-cdm-swam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-cdm-vuln
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-csm
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-hwan
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-org
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-sb
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-swam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-norm-vuln
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: abc-raw-armis
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+# xyz schemas
+  - schemaId: xyz-cdm-csm
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-hwam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-org
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-quality
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-sb
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-swam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-cdm-vuln
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-csm
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-hwan
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-org
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-sb
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-swam
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-norm-vuln
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }
+  - schemaId: xyz-raw-axon
+    namespace: cdm-kafka
+    schema: |
+      {
+         "$schema": "http://json-schema.org/draft/2020-12/schema",
+         "type": "object",
+         "properties": {},
+         "additionalProperties": true
+       }

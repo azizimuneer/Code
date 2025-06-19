@@ -1,0 +1,225 @@
+topics:
+  - nameTopic: abc-norm-csm
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-norm-hwam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-norm-swam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-norm-org
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-norm-sb
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-norm-vuln
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-hwam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-vuln
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-swam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-csm
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-sb
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-cdm-org
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-raw-armis
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: abc-raw-axon
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-csm
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-hwam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-swam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-org
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-sb
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-norm-vuln
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-hwam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-vuln
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-swam
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-csm
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-sb
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-cdm-org
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-raw-armis
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential
+  - nameTopic: xyz-raw-axon
+    nameSpace: cdm-kafka
+    partitions: 12
+    replicationFactor: 3
+    retention: "259200000"
+    cleanup: delete
+    clusterName: kafka
+    secret: rest-credential

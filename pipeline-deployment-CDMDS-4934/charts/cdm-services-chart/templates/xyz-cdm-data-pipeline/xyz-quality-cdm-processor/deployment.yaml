@@ -1,0 +1,44 @@
+{{- if or .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled .Values.xyz_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.name }}
+  namespace: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.namespace }}
+  labels:
+    app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.name }}
+  annotations:
+    {{- toYaml .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.name }}
+    spec:
+      {{- if .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.serviceAccount.name }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.name }}
+          image: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.image.repository }}:{{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.image.tag }}
+          args:
+            {{- range .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.commandArgs }}
+            - {{ . | quote }}
+            {{- end }}
+          envFrom:
+            {{- include "xyz_quality_cdm_processor.envVars" . | nindent 12 }}
+          resources:
+            limits:
+              cpu: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.resources.limits.cpu }}
+              memory: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_cdm_processor.resources.limits.memory }}
+      restartPolicy: {{ .Values.global.restartPolicy }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+{{- end }}
+{{- end }}

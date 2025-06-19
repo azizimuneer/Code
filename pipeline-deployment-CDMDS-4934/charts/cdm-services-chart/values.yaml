@@ -1,0 +1,797 @@
+global:
+  restartPolicy: Always
+  imagePullSecrets:
+    - name: ecr-secret
+  image:
+    repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+    tag: "latest"
+
+
+abc_cdm_data_pipeline:
+  deploy_environment:
+    local:
+      enabled: false
+    eks:
+      enabled: true
+
+  abc_armis_connector:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    replicaCount: 1
+    name: abc-armis-connector
+    namespace: abc-armis-connector-helm
+    serviceAccount:
+      create: false  # true to create the serviceAccount for the cron job, set false to prevent the creation of serviceAccountName for the cron job
+      enabled: false  # true to use serviceAccountName in the cron job, set false to prevent the use of serviceAccountName in the cron job
+      name: abc-armis-connector-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-armis-connector-role
+    annotations:
+      secret.reloader.stakater.com/reload: "abc-armis-connector"
+      configmap.reloader.stakater.com/reload: "abc-armis-connector"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    commandArgs:
+      - "dsp"
+      - "connect"
+      - "armis"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+    restartPolicy: OnFailure
+    imagePullSecrets:
+      - name: ecr-secret
+    cronJob:
+      schedule: "0 * */6 * *"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        privileged: true
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-armis-connector
+        creationPolicy: Owner
+      data:
+        - secretKey: ARMIS_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ARMIS_KEY
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ARMISCONNECTOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ARMISCONNECTOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ARMIS_URL: "https://armisurl/api"
+      ORGANIZATION_ID: "abc"
+  
+  abc_armis_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed  
+    name: "abc-armis-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "abc-armis-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "abc-armis-processor"
+      configmap_reloader_stakater_com_reload: "abc-armis-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "armis"
+      - "--group"
+      - "process-armis"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1Gi"
+      requests:
+        cpu: "500m" #
+        memory: "256Mi" #
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-armis-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ARMISPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ARMISPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ORGANIZATION_ID: "abc"
+
+  abc_cdm_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed    
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: abc-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-cdm-role
+    name: "abc-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "abc-cdm-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "abc-cdm-processor"
+      configmap_reloader_stakater_com_reload: "abc-cdm-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "cdm"
+      - "--group"
+      - "process-cdm"
+      - "--cache"
+      - "valkey"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m" #
+        memory: "1Gi" #
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-cdm-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CDMPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CDMPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      CACHE_CONNECTION_URL: "valkeys://testcache.com:6379"
+      ORGANIZATION_ID: "abc"
+ 
+  abc_elastic_sink:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    name: "abc-elastic-sink"
+    namespace: "abc-elastic-sink"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "abc-elastic-sink"
+      configmap_reloader_stakater_com_reload: "abc-elastic-sink"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+      requests:
+        cpu: "250m" #
+        memory: "128Mi" #
+    commandArgs:
+      - "dsp"
+      - "sink"
+      - "cdm"
+      - "--group"
+      - "sink-cdm"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-elastic-sink
+        creationPolicy: Owner
+      data:
+        - secretKey: ELASTICSEARCH_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTICSEARCH_API_KEY
+        - secretKey: ELASTIC_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTIC_CA_CERT
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ELASTICSINK_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_ELASTICSINK_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9092"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ELASTICSEARCH_HOST: "https://elasticurl:9200"
+      ORGANIZATION_ID: "abc"
+
+  abc_quality_cdm_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: abc-quality-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-cdm-role
+    name: "abc-quality-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "abc-quality-cdm-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "abc-quality-cdm-processor"
+      configmap_reloader_stakater_com_reload: "abc-quality-cdm-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "quality"
+      - "--group"
+      - "process-quality"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m" #
+        memory: "1Gi" #
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-quality-cdm-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_QUALITYCDMPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_QUALITYCDMPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      CACHE_CONNECTION_URL: "valkeys://testcache.com:6379"
+      ORGANIZATION_ID: "abc"
+
+  abc_quality_elastic_sink:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    name: "abc-quality-elastic-sink"
+    namespace: "abc-quality-elastic-sink"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "abc-quality-elastic-sink"
+      configmap_reloader_stakater_com_reload: "abc-quality-elastic-sink"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "250m" #
+        memory: "128Mi" #
+    commandArgs:
+      - "dsp"
+      - "sink"
+      - "quality"
+      - "--group"
+      - "sink-quality"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: abc-quality-elastic-sink
+        creationPolicy: Owner
+      data:
+        - secretKey: ELASTICSEARCH_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTICSEARCH_API_KEY
+        - secretKey: ELASTIC_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTIC_CA_CERT
+        - secretKey: ELASTICSEARCH_QUALITY_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTICSEARCH_QUALITY_API_KEY
+        - secretKey: ELASTIC_QUALITY_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: ELASTIC_QUALITY_CA_CERT
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_QUALITYELASTICSINK_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/abc/pipeline-core
+            property: KAFKA_QUALITYELASTICSINK_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9092"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ELASTICSEARCH_QUALITY_HOST: "https://elasticurl.com"
+      ORGANIZATION_ID: "abc"
+
+xyz_cdm_data_pipeline:
+  deploy_environment:
+    local:
+      enabled: false
+    eks:
+      enabled: true
+
+  xyz_axonius_connector:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    replicaCount: 1
+    name: xyz-axonius-connector
+    namespace: xyz-axonius-connector-helm
+    serviceAccount:
+      create: false  # true to create the serviceAccount for the cron job, set false to prevent the creation of serviceAccountName for the cron job
+      enabled: false  # true to use serviceAccountName in the cron job, set false to prevent the use of serviceAccountName in the cron job
+      name: xyz-axonius-connector-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/xyz-axonius-connector-role
+    annotations:
+      secret.reloader.stakater.com/reload: "xyz-axonius-connector"
+      configmap.reloader.stakater.com/reload: "xyz-axonius-connector"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    commandArgs:
+      - "dsp"
+      - "connect"
+      - "axon"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+    restartPolicy: OnFailure
+    imagePullSecrets:
+      - name: ecr-secret
+    cronJob:
+      schedule: "0 * */6 * *"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+        privileged: true
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-axonius-connector
+        creationPolicy: Owner
+      data:
+        - secretKey: AXONIUS_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: AXONIUS_KEY
+        - secretKey: AXONIUS_SECRET
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: AXONIUS_SECRET
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_AXONIUSCONNECTOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_AXONIUSCONNECTOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      AXONIUS_CONNECTION_URL: "https://axoniusurl.com/"
+      ORGANIZATION_ID: "xyz"
+  
+  xyz_axonius_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed  
+    name: "xyz-axonius-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-axonius-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "xyz-axonius-processor"
+      configmap_reloader_stakater_com_reload: "xyz-axonius-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "axon"
+      - "--group"
+      - "process-axon"
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "512Mi"
+      requests:
+        cpu: "500m"
+        memory: "256Mi"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-axonius-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_AXONIUSPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_AXONIUSPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ORGANIZATION_ID: "xyz"
+
+  xyz_cdm_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed    
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: xyz-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/dictionary-connector-role
+    name: "xyz-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-cdm-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "xyz-cdm-processor"
+      configmap_reloader_stakater_com_reload: "xyz-cdm-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "cdm"
+      - "--group"
+      - "process-cdm"
+      - "--cache"
+      - "valkey"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-cdm-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CDMPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CDMPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      CACHE_CONNECTION_URL: "valkeys://testcache.com:6379"
+      ORGANIZATION_ID: "xyz"
+ 
+  xyz_elastic_sink:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    name: "xyz-elastic-sink"
+    namespace: "xyz-elastic-sink"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "xyz-elastic-sink"
+      configmap_reloader_stakater_com_reload: "xyz-elastic-sink"
+    image:
+      enabled: false
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+      requests:
+        cpu: "250m"
+        memory: "128Mi"
+    commandArgs:
+      - "dsp"
+      - "sink"
+      - "cdm"
+      - "--group"
+      - "sink-cdm"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-elastic-sink
+        creationPolicy: Owner
+      data:
+        - secretKey: ELASTICSEARCH_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTICSEARCH_API_KEY
+        - secretKey: ELASTIC_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTIC_CA_CERT
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_ELASTICSINK_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_ELASTICSINK_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9092"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ELASTICSEARCH_HOST: "https://elasticurl:9200" # check for 'abc' here
+      ORGANIZATION_ID: "xyz"
+
+  xyz_quality_cdm_processor:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: xyz-quality-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/dictionary-connector-role
+    name: "xyz-quality-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-quality-cdm-processor"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "xyz-quality-cdm-processor"
+      configmap_reloader_stakater_com_reload: "xyz-quality-cdm-processor"
+    commandArgs:
+      - "dsp"
+      - "process"
+      - "quality"
+      - "--group"
+      - "process-quality"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-quality-cdm-processor
+        creationPolicy: Owner
+      data:
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_QUALITYCDMPROCESSOR_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_QUALITYCDMPROCESSOR_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      CACHE_CONNECTION_URL: "valkeys://testcache.com:6379"
+      ORGANIZATION_ID: "xyz"
+
+  xyz_quality_elastic_sink:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    name: "xyz-quality-elastic-sink"
+    namespace: "xyz-quality-elastic-sink"
+    replicaCount: 1
+    annotations:
+      secret_reloader_stakater_com_reload: "xyz-quality-elastic-sink"
+      configmap_reloader_stakater_com_reload: "xyz-quality-elastic-sink"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+      tag: "latest"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "250m" #
+        memory: "128Mi" #
+    commandArgs:
+      - "dsp"
+      - "sink"
+      - "quality"
+      - "--group"
+      - "sink-quality"
+    externalSecret:
+      refreshInterval: "60m"
+      secretStoreRef:
+        name: aws-cluster-secret-store
+        kind: ClusterSecretStore
+      target:
+        name: xyz-quality-elastic-sink
+        creationPolicy: Owner
+      data:
+        - secretKey: ELASTICSEARCH_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTICSEARCH_API_KEY
+        - secretKey: ELASTIC_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTIC_CA_CERT
+        - secretKey: ELASTICSEARCH_QUALITY_API_KEY
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTICSEARCH_QUALITY_API_KEY
+        - secretKey: ELASTIC_QUALITY_CA_CERT
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: ELASTIC_QUALITY_CA_CERT
+        - secretKey: KAFKA_CA_CERT_ENCODED
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_CA_CERT_ENCODED
+        - secretKey: KAFKA_USERNAME
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_QUALITYELASTICSINK_USERNAME
+        - secretKey: KAFKA_PASSWORD
+          remoteRef:
+            key: /cdm-data-pipeline/xyz/pipeline-core
+            property: KAFKA_QUALITYELASTICSINK_PASSWORD
+    config:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9092"
+      KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+      ELASTICSEARCH_QUALITY_HOST: "https://elasticurl.com"
+      ORGANIZATION_ID: "xyz"
+
+cdm_dictionary_connector:
+  deploy_environment:
+    local:
+      enabled: true
+    eks:
+      enabled: true
+  
+  enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+  replicaCount: 1
+  name: cdm-dictionary-connector
+  namespace: cdm-dictionary-connector-helm
+  serviceAccount:
+    create: true  # true to create the serviceAccount for the cron job, set false to prevent the creation of serviceAccountName for the cron job
+    enabled: true  # true to use serviceAccountName in the cron job, set false to prevent the use of serviceAccountName in the cron job
+    name: cdm-dictionary-connector-sa
+    roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/cdm-dictionary-connector-role
+  annotations:
+    secret.reloader.stakater.com/reload: "cdm-dictionary-connector"
+    configmap.reloader.stakater.com/reload: "cdm-dictionary-connector"
+  image:
+    enabled: false  # default: false to use global image, set true to override
+    repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/pipeline/pipeline-core"
+    tag: "latest"
+  config:
+    CACHE_CONNECTION_URL: "valkeys://testcache.com:6379"
+    ORGANIZATION_ID: "xyz"
+  commandArgs:
+    - "dsp"
+    - "connect"
+    - "dictionaries"
+    - "--bucket"
+    - "pipeline-seed-files"
+    - "--cache"
+    - "valkey"
+  resources:
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+  restartPolicy: OnFailure
+  imagePullSecrets:
+    - name: ecr-secret
+  cronJob:
+    schedule: "* * */1 * *"
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      privileged: true

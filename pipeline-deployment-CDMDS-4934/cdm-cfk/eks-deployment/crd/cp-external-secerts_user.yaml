@@ -1,0 +1,32 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: user-credential
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: user-credential
+  data:
+    - secretKey: bootstrapEndpoint
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: bootstrapEndpoint
+    - secretKey: usercred
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: creds-client-kafka-sasl-user.txt
+    - secretKey: ca.pem
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca.pem
+    - secretKey: ca.pem-base64
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca.pem-base64
+
+

@@ -1,0 +1,13 @@
+{{- if or .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled .Values.xyz_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.name }}
+  namespace: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.namespace }}
+data:
+  {{- range $key, $value := .Values.xyz_cdm_data_pipeline.xyz_axonius_connector.config }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
+{{- end }}
+{{- end }}

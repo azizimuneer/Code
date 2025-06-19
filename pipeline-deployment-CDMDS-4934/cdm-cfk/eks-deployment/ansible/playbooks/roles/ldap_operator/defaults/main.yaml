@@ -1,0 +1,4 @@
+namespace_name: cdm-kafka
+ldap_release_name: cdm-ldap
+helm_chart_path: "{{ playbook_dir }}/../../openldap"
+ldap_values_file: "{{ playbook_dir }}/../../openldap/ldaps-rbac.yaml"

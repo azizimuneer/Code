@@ -1,0 +1,4 @@
+namespace_name: cdm-cert-manager
+ca_cert: LS0tLS1CRUdJTiB1223124412DRVJUSUZJQ0
+tls_cert: LS0tLS1CRUdJTiB123DRVJUSUZJQ
+tls_key: LS0tLS1CRUdJTiBFQyBQUk

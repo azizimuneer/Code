@@ -1,0 +1,29 @@
+- name: Wait for Kafka and KraftController pods to be running
+  vars:
+    required_pods:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+      - kraftcontroller-0
+      - kraftcontroller-1
+      - kraftcontroller-2
+  kubernetes.core.k8s_info:
+    namespace: "{{ namespace_name }}"
+    kind: Pod
+  register: pod_info
+  until: >
+    pod_info.resources | selectattr('metadata.name', 'in', required_pods) | selectattr('status.phase', 'equalto', 'Running') | length == required_pods | length
+  retries: 36
+  delay: 10
+  timeout: 360
+
+
+- name: Deploy Schema Registry using template
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/schema-registry.yaml.j2') | from_yaml_all }}"
+
+- name: Apply SchemaRegistry Role Bindings
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/schema-registry-roles.yaml.j2') | from_yaml_all }}"

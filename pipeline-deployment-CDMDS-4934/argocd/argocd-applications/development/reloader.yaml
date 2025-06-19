@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reloader
+  namespace: argocd
+spec:
+  destination:
+    namespace: reloader
+    server: "https://kubernetes.default.svc"
+  project: cdm
+  source:
+    path: charts/reloader
+    repoURL: "https://repourl.com/scm/ds/pipeline-deployment.git"
+    targetRevision: main
+    helm:
+      releaseName: reloader
+      valueFiles:
+        - values.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=true
+      - ApplyOutOfSyncOnly=true
+      - Replace=false
+      - SkipDryRun=true
+      - ManualSync=fase
+
+

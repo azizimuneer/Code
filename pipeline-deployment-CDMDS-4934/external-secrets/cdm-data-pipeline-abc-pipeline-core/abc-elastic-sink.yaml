@@ -1,0 +1,34 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: abc-elastic-sink
+  namespace: abc-elastic-sink
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: abc-elastic-sink
+    creationPolicy: Owner
+  data:
+  - secretKey: ELASTICSEARCH_API_KEY
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: ELASTICSEARCH_API_KEY
+  - secretKey: ELASTIC_CA_CERT
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: ELASTIC_CA_CERT
+  - secretKey: KAFKA_CA_CERT_ENCODED
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_CA_CERT_ENCODED
+  - secretKey: KAFKA_USERNAME
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_ELASTICSINK_USERNAME
+  - secretKey: KAFKA_PASSWORD
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_ELASTICSINK_PASSWORD

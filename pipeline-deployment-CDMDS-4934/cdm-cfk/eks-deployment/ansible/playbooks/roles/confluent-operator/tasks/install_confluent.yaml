@@ -1,0 +1,36 @@
+- name: Check if namespace exists
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Namespace
+    name: "{{ namespace_name }}"
+  register: ns_check
+
+- name: Fail if namespace does not exist
+  ansible.builtin.fail:
+    msg: "Namespace '{{ namespace_name }}' does not exist. Please create it before running this playbook."
+  when: ns_check.resources | length == 0
+
+- name: Add Confluent Helm repository
+  kubernetes.core.helm_repository:
+    name: confluentinc
+    repo_url: https://packages.confluent.io/helm
+
+- name: Update Helm repositories
+  kubernetes.core.helm:
+    name: dummy
+    namespace: "{{ namespace_name }}"
+    state: absent
+    update_repo_cache: true
+
+- name: Install or upgrade Confluent Operator via Helm
+  kubernetes.core.helm:
+    name: "{{ confluent_release_name }}"
+    chart_ref: confluentinc/confluent-for-kubernetes
+    release_namespace: "{{ namespace_name }}"
+    values:
+      namespaced: false
+      kRaftEnabled: true
+      fipsmode: true
+      licenseKey: "{{ lookup('file', confluent_license) | trim }}"
+    state: present
+    create_namespace: false

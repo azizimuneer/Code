@@ -1,0 +1,55 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: schemaregistry-0
+  namespace: {{ namespace_name }}
+spec:
+  clustersScopeByIds:
+    schemaRegistryClusterId: id_schemaregistry_{{ namespace_name }}
+  principal:
+    name: sr
+    type: user
+  role: SystemAdmin
+
+---
+
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: schemaregistry-1
+  namespace: {{ namespace_name }}
+spec:
+  principal:
+    type: user
+    name: sr
+  resourcePatterns:
+  - name: _confluent-license
+    patternType: LITERAL
+    resourceType: Topic
+  - name: _schemas_schemaregistry_confluent
+    patternType: LITERAL
+    resourceType: Topic
+  - name: id_schemaregistry_confluent
+    patternType: LITERAL
+    resourceType: Group
+  role: ResourceOwner
+
+---
+
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: internal-schemaregistry-schema-validation
+  namespace: {{ namespace_name }}
+spec:
+  clustersScopeByIds:
+    schemaRegistryClusterId: id_schemaregistry_{{ namespace_name }}
+  principal:
+    name: ANONYMOUS
+    type: user
+  resourcePatterns:
+  - name: "*"
+    patternType: LITERAL
+    resourceType: Subject
+  role: DeveloperRead

@@ -1,0 +1,13 @@
+{{- range .Values.global.preInstallNamespaces }}
+{{- $existingNamespace := lookup "v1" "Namespace" "" . -}}
+{{- if not $existingNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ . }}
+  annotations:
+    "helm.sh/resource-policy": "keep"
+---
+{{- end }}
+{{- end }}
+ 

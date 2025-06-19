@@ -1,0 +1,80 @@
+- name: Deploy Cert-Manager
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install Cert-Manager
+      ansible.builtin.include_role:
+        name: cert-manager
+        tasks_from: install_cert-manager.yaml
+
+- name: Create Kafka namespace
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create Namespace
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: create_namespace.yaml
+
+- name: Deploy kafka secrets
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Deploy kafka secrets
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: deploy_secrets.yaml
+
+- name: Deploy LDAP
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install LDAP
+      ansible.builtin.include_role:
+        name: ldap_operator
+        tasks_from: install_ldap.yaml
+
+- name: Deploy kafka certs
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install all kafka certs
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: create_kafkacerts.yaml
+
+- name: Deploy confluent operator
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Deploy confluent operator
+      ansible.builtin.include_role:
+        name: confluent-operator
+        tasks_from: install_confluent.yaml
+
+- name: Create Kafka Service Account
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create Kafka Service Account 
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: create_kafkaserviceaccount.yaml
+
+- name: Deploy Kafka and KRaft
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Deploy Kafka and KRaft
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: deploy_kafka.yaml
+
+- name: Deploy SchemaRegistry
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Deploy Schemaregistry and schema RBAC
+      ansible.builtin.include_role:
+        name: kafka-deployment
+        tasks_from: deploy_schemaregistry.yaml

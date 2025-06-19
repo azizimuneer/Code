@@ -1,0 +1,4 @@
+- name: Apply kafka certs from j2 template
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/kafka-certificates.yaml.j2') | from_yaml_all }}"

@@ -1,0 +1,47 @@
+- name: Add Jetstack Helm repository
+  kubernetes.core.helm_repository:
+    name: jetstack
+    repo_url: https://charts.jetstack.io
+
+- name: Check if namespace exists
+  kubernetes.core.k8s_info:
+    kind: Namespace
+    name: "{{ namespace_name }}"
+  register: namespace_info
+  ignore_errors: true
+
+- name: Create namespace if it does not exist
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ namespace_name }}"
+  when: namespace_info.resources | length == 0
+
+- name: Install cert-manager via Helm
+  kubernetes.core.helm:
+    name: cert-manager
+    chart_ref: jetstack/cert-manager
+    release_namespace: "{{ namespace_name }}"
+    create_namespace: false
+    chart_version: v1.17.2
+    values:
+      crds:
+        enabled: true
+      extraArgs:
+        - --feature-gates=AdditionalCertificateOutputFormats=true
+      webhook:
+        extraArgs:
+          - --feature-gates=AdditionalCertificateOutputFormats=true
+        timeoutSeconds: 1
+      prometheus:
+        enabled: false
+    state: present
+    wait: true
+
+- name: Apply CA Secret and ClusterIssuer from template
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/cdm-ca-clusterissuer.yaml.j2') | from_yaml_all }}"

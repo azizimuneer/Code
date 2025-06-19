@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cdm-ca-key-pair
+  namespace: cdm-cert-manager
+data:
+  ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJ
+  tls.crt: LS1232130tLS1CRUdJT
+  tls.key: LS123123
+
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cdm-ca-clusterissuer
+  namespace: cdm-cert-manager
+spec:
+  ca:
+    secretName: cdm-ca-key-pair

@@ -1,0 +1,44 @@
+{{- if or .Values.abc_cdm_data_pipeline.deploy_environment.local.enabled .Values.abc_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.abc_cdm_data_pipeline.abc_cdm_processor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.name }}
+  namespace: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.namespace }}
+  labels:
+    app: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.name }}
+  annotations:
+    {{- toYaml .Values.abc_cdm_data_pipeline.abc_cdm_processor.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.name }}
+    spec:
+      {{- if .Values.abc_cdm_data_pipeline.abc_cdm_processor.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.serviceAccount.name }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.name }}
+          image: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.image.repository }}:{{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.image.tag }}
+          args:
+            {{- range .Values.abc_cdm_data_pipeline.abc_cdm_processor.commandArgs }}
+            - {{ . | quote }}
+            {{- end }}
+          envFrom:
+            {{- include "abc_cdm_processor.envVars" . | nindent 12 }}
+          resources:
+            limits:
+              cpu: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.resources.limits.cpu }}
+              memory: {{ .Values.abc_cdm_data_pipeline.abc_cdm_processor.resources.limits.memory }}
+      restartPolicy: {{ .Values.global.restartPolicy }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+{{- end }}
+{{- end }}

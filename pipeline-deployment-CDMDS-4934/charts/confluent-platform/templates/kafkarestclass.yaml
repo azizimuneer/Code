@@ -1,0 +1,17 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaRestClass
+metadata:
+  name: {{ .Values.restclass.name }}
+  namespace: {{ .Values.namespace }}
+  annotations:
+    secret.reloader.stakater.com/reload: "{{ .Values.secrets.restCredential }}"
+spec:
+  kafkaClusterRef:
+    name: {{ .Values.restclass.kafkaClusterRef.name }}
+  kafkaRest:
+    authentication:
+      type: {{ .Values.restclass.authentication.type }}
+      bearer:
+        secretRef: {{ .Values.restclass.authentication.bearer.secretRef }}
+
+

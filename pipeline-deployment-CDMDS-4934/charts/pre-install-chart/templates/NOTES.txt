@@ -1,0 +1,10 @@
+The following namespaces have been created:
+
+{{- range .Values.global.preInstallNamespaces }}
+  - {{ . }}
+{{- end }}
+
+To verify, run:
+  kubectl get namespace
+    or
+  kubectl get namespace <namespace>

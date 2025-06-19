@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pipeline-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://repourl.com/scm/ds/-data-pipeline.git
+data:
+  password: YOUR_TOKEN-HERE
+  username: YOUR_USERNAME_HERE

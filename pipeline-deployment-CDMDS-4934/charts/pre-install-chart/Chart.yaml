@@ -1,0 +1,6 @@
+apiVersion: v2
+name: pre-install-chart
+description: A chart to complete pre-install steps in absence of pre-install hook
+type: application
+version: 0.1.0
+appVersion: "latest"

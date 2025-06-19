@@ -1,0 +1,16 @@
+{{- range .Values.schemas }}
+apiVersion: platform.confluent.io/v1beta1
+kind: Schema
+metadata:
+  name: "{{ .schemaId }}-value"
+  namespace:  {{ .namespace }}
+  annotations:
+       "helm.sh/hook-weight": "2"
+spec:
+  compatibilityLevel: FULL
+  mode: READWRITE
+  data:
+    configRef: "{{ .schemaId}}-config"
+    format: json
+---
+{{- end }}

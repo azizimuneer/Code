@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pre-install-chart
+  namespace: argocd
+spec:
+  destination:
+    namespace: pre-install-chart
+    server: "https://kubernetes.default.svc"
+  project: cdm
+  source:
+    path: charts/pre-install-chart
+    repoURL: "https://repourl.com/scm/ds/pipeline-deployment.git"
+    targetRevision: main
+    helm:
+      releaseName: pre-install-chart
+      valueFiles:
+        - mainment.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Validate=true
+      - ApplyOutOfSyncOnly=true
+      - Replace=false
+      - SkipDryRun=true
+      - ManualSync=fase

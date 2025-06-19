@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: abc-quality-cdm-processor-sa
+  namespace: abc-quality-cdm-processor
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-cdm-role 
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: abc-quality-cdm-processor
+  namespace: abc-quality-cdm-processor
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+  KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+  CACHE_CONNECTION_URL: "valkeys://testcveamazonaws.com:6379"
+  ORGANIZATION_ID: "abc"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abc-quality-cdm-processor
+  namespace: abc-quality-cdm-processor
+  labels:
+    app: abc-quality-cdm-processor
+  annotations:
+    configmap.reloader.stakater.com/reload: "abc-quality-cdm-processor"
+    secret.reloader.stakater.com/reload: "abc-quality-cdm-processor"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abc-quality-cdm-processor
+  template:
+    metadata:
+      labels:
+        app: abc-quality-cdm-processor
+    spec:
+      serviceAccountName: abc-quality-cdm-processor-sa
+      containers:
+        - name: abc-quality-cdm-processor
+          image: ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/betsie/-core:IMAGE_TAG
+          imagePullPolicy: Always
+          args: 
+            - "dsp"
+            - "process"
+            - "quality"
+            - "--group"
+            - "process-quality"
+          envFrom:
+            - secretRef:
+                name: abc-quality-cdm-processor
+            - configMapRef:
+                name: abc-quality-cdm-processor
+          resources:
+            limits:
+              cpu: "1"
+              memory: "3Gi"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: ecr-secret

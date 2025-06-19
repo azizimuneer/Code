@@ -1,0 +1,6 @@
+apiVersion: v2
+name: confluent-platform
+description: A Helm chart to deploy Confluent Platform components using CRDs
+type: application
+version: 0.1.0
+appVersion: "7.8.0"

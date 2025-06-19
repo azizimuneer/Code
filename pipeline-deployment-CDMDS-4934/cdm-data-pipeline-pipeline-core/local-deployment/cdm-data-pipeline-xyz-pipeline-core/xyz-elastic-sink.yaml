@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xyz-elastic-sink
+  namespace: xyz-elastic-sink
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9092"
+  KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+  ELASTICSEARCH_HOST: "https://ELASTICURL.com:9200"
+  ORGANIZATION_ID: "xyz"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xyz-elastic-sink
+  namespace: xyz-elastic-sink
+  labels:
+    app: xyz-elastic-sink
+  annotations:
+    configmap.reloader.stakater.com/reload: "xyz-elastic-sink"
+    secret.reloader.stakater.com/reload: "xyz-elastic-sink"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xyz-elastic-sink
+  template:
+    metadata:
+      labels:
+        app: xyz-elastic-sink
+    spec:
+      containers:
+        - name: xyz-elastic-sink
+          image: ACOCUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipeline/pipeline-core:pvs1.0
+          args: 
+            - "dsp"
+            - "sink"
+            - "cdm"
+            - "--group"
+            - "sink-cdm"
+          envFrom:
+            - secretRef:
+                name: xyz-elastic-sink
+            - configMapRef:
+                name: xyz-elastic-sink
+          resources:
+             limits:
+               cpu: "1"
+               memory: "3Gi"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: ecr-secret

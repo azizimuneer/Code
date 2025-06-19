@@ -1,0 +1,51 @@
+{{- if or .Values.cdm_dictionary_connector.deploy_environment.local.enabled .Values.cdm_dictionary_connector.deploy_environment.eks.enabled }}
+{{- if .Values.cdm_dictionary_connector.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.cdm_dictionary_connector.name }}-cron
+  namespace: {{ .Values.cdm_dictionary_connector.namespace }}
+  annotations:
+    {{- toYaml .Values.cdm_dictionary_connector.annotations | nindent 4 }}
+spec:
+  schedule: {{ .Values.cdm_dictionary_connector.cronJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.cdm_dictionary_connector.name }}
+        spec:
+          {{- if .Values.cdm_dictionary_connector.serviceAccount.enabled }}
+          serviceAccountName: {{ .Values.cdm_dictionary_connector.serviceAccount.name }}
+          {{- end }}
+          restartPolicy: {{ .Values.cdm_dictionary_connector.restartPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.fsGroup }}
+          imagePullSecrets:
+            {{- range .Values.cdm_dictionary_connector.imagePullSecrets }}
+            - name: {{ .name }}
+            {{- end }}
+          containers:
+            - name: {{ .Values.cdm_dictionary_connector.name }}
+              image: {{- if .Values.cdm_dictionary_connector.image.enabled | default false }} {{ .Values.cdm_dictionary_connector.image.repository }}:{{ .Values.cdm_dictionary_connector.image.tag }}{{- else }} {{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}{{- end }}
+              securityContext:
+                runAsUser: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.runAsUser }}
+                runAsGroup: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.runAsGroup }}
+                privileged: {{ .Values.cdm_dictionary_connector.cronJob.securityContext.privileged }}
+              args:
+                {{- range .Values.cdm_dictionary_connector.commandArgs }}
+                - {{ . | quote }}
+                {{- end }}
+              envFrom:
+                {{- include "cdm_dictionary_connector.envVars" . | nindent 16 }}
+              {{- if not .Values.cdm_dictionary_connector.deploy_environment.local.enabled }}
+              resources:
+                limits:
+                  cpu: {{ .Values.cdm_dictionary_connector.resources.limits.cpu }}
+                  memory: {{ .Values.cdm_dictionary_connector.resources.limits.memory }}
+              {{- end }}
+{{- end }}
+{{- end }}

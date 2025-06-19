@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cdm-dictionary-connector
+  namespace: cdm-dictionary-connector
+data:
+  CACHE_CONNECTION_URL: "valkeys://testcvecacheaws.com:6379"
+  ORGANIZATION_ID: "xyz"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cdm-dictionary-connector-cron
+  namespace: cdm-dictionary-connector
+spec:
+  schedule: 0 5 * * * #Runs once per day at midnight EST
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: cdm-dictionary-connector
+        spec:
+          serviceAccountName: cdm-dictionary-connector-sa
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            fsGroup: 0
+          imagePullSecrets:
+            - name: ecr-secret
+          containers:
+            - name: cdm-dictionary-connector
+              image: ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipeline-core:pvs1.0
+              securityContext: 
+                runAsUser: 0
+                runAsGroup: 0
+                privileged: true
+              args:
+                - "dsp"
+                - "connect"
+                - "dictionaries"
+                - "--bucket"
+                - "pipeline-seed-files"
+                - "--cache"
+                - "valkey"
+              envFrom:
+                - configMapRef:
+                    name: cdm-dictionary-connector
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: "2Gi"
+

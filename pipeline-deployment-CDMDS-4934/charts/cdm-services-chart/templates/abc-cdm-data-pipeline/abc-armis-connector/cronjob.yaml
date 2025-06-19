@@ -1,0 +1,55 @@
+{{- if or .Values.abc_cdm_data_pipeline.deploy_environment.local.enabled .Values.abc_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.abc_cdm_data_pipeline.abc_armis_connector.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.name }}-cron
+  namespace: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.namespace }}
+  annotations:
+    {{- toYaml .Values.abc_cdm_data_pipeline.abc_armis_connector.annotations | nindent 4 }}
+spec:
+  schedule: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.name }}
+        spec:
+          {{- if .Values.abc_cdm_data_pipeline.abc_armis_connector.serviceAccount.enabled }}
+          serviceAccountName: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.serviceAccount.name }}
+          {{- end }}
+          restartPolicy: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.restartPolicy }}
+          securityContext:
+            runAsUser: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.fsGroup }}
+          imagePullSecrets:
+            {{- range .Values.abc_cdm_data_pipeline.abc_armis_connector.imagePullSecrets }}
+            - name: {{ .name }}
+            {{- end }}
+          containers:
+            - name: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.name }}
+              image: {{- if .Values.abc_cdm_data_pipeline.abc_armis_connector.image.enabled | default false }} {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.image.repository }}:{{ .Values.abc_cdm_data_pipeline.abc_armis_connector.image.tag }}{{- else }} {{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}{{- end }}
+              securityContext:
+                runAsUser: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.runAsUser }}
+                runAsGroup: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.runAsGroup }}
+                privileged: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.cronJob.securityContext.privileged }}
+              args:
+                {{- range .Values.abc_cdm_data_pipeline.abc_armis_connector.commandArgs }}
+                - {{ . | quote }}
+                {{- end }}
+              envFrom:
+                {{- include "abc_armis_connector.envVars" . | nindent 16 }}
+              {{- if not .Values.abc_cdm_data_pipeline.deploy_environment.local.enabled }}
+              resources:
+                limits:
+                  cpu: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.resources.limits.cpu }}
+                  memory: {{ .Values.abc_cdm_data_pipeline.abc_armis_connector.resources.limits.memory }}
+              {{- end }}
+{{- end }}
+{{- end }}
+
+
+
+

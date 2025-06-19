@@ -1,0 +1,4 @@
+- name: Deploy Kafka and KRaftController resources from template
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'templates/kafka-deployment.yaml.j2') | from_yaml_all }}"

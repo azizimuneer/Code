@@ -1,0 +1,26 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: abc-quality-cdm-processor
+  namespace: abc-quality-cdm-processor
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: abc-quality-cdm-processor
+    creationPolicy: Owner
+  data:
+  - secretKey: KAFKA_CA_CERT_ENCODED
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_CA_CERT_ENCODED
+  - secretKey: KAFKA_USERNAME
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_QUALITYCDMPROCESSOR_USERNAME
+  - secretKey: KAFKA_PASSWORD
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_QUALITYCDMPROCESSOR_PASSWORD

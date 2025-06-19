@@ -1,0 +1,81 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kafka-tls
+  namespace: cdm-kafka
+spec:
+  secretName: kafka-tls
+  additionalOutputFormats:
+  - type: CombinedPEM
+  - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: kafka.cdm-kafka.cdm.gov
+  dnsNames:
+  - "kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-0.kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-1.kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-2.kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-3.kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-4.kafka.cdm-kafka.svc.cluster.local"
+  - "kafka-5.kafka.cdm-kafka.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kraftcontroller-tls
+  namespace: cdm-kafka
+spec:
+  secretName: kraftcontroller-tls
+  additionalOutputFormats:
+  - type: CombinedPEM
+  - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: kraftcontroller.cdm-kafka.cdm.gov
+  dnsNames:
+  - "kraftcontroller-0.kraftcontroller.cdm-kafka.svc.cluster.local"
+  - "kraftcontroller-1.kraftcontroller.cdm-kafka.svc.cluster.local"
+  - "kraftcontroller-2.kraftcontroller.cdm-kafka.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mds-tls
+  namespace: cdm-kafka
+spec:
+  secretName: mds-tls
+  additionalOutputFormats:
+  - type: CombinedPEM
+  - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: mds.cdm-kafka.cdm.gov
+  dnsNames:
+  - "*.kafka.cdm-kafka.svc.cluster.local"
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: schemaregistry-tls
+  namespace: cdm-kafka
+spec:
+  secretName: schemaregistry-tls
+  additionalOutputFormats:
+  - type: CombinedPEM
+  - type: DER
+  issuerRef:
+    name: cdm-ca-clusterissuer
+    kind: ClusterIssuer
+  commonName: schemaregistry.cdm-kafka.cdm.gov
+  dnsNames:
+  - "schemaregistry.cdm-kafka.svc.cluster.local"
+  - "schemaregistry-0.schemaregistry.cdm-kafka.svc.cluster.local"
+  - "schemaregistry-1.schemaregistry.cdm-kafka.svc.cluster.local"

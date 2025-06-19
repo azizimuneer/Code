@@ -1,0 +1,21 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: schemaregistry-1
+  namespace: cdm-kafka
+spec:
+  principal:
+    type: user
+    name: sr
+  resourcePatterns:
+  - name: _confluent-license
+    patternType: LITERAL
+    resourceType: Topic
+  - name: _schemas_schemaregistry_confluent
+    patternType: LITERAL
+    resourceType: Topic
+  - name: id_schemaregistry_confluent
+    patternType: LITERAL
+    resourceType: Group
+  role: ResourceOwner
+

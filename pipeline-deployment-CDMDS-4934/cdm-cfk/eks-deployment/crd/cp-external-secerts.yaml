@@ -1,0 +1,226 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-c3
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-c3
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: c3-mds-client.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-connect
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-connect
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: connect-mds-client.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-erp
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-erp
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: bearer.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-krp
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-krp
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: krp-mds-client.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-ksql
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-ksql
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ksqldb-mds-client.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-sr
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-sr
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: sr-mds-client.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-token
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-token
+  data:
+    - secretKey: mdsPublicKey.pem
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: mdsPublicKey.pem
+    - secretKey: mdsTokenKeyPair.pem
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: mdsTokenKeyPair.pem
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: credential
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: credential
+  data:
+    - secretKey: ldap.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ldap.txt
+    - secretKey: plain-users.json
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: creds-kafka-sasl-users.json
+    - secretKey: plain.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: creds-client-kafka-sasl-user.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ca-pair-sslcerts
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: ca-pair-sslcerts
+  data:
+    - secretKey: tls.crt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca.pem
+    - secretKey: tls.key
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca-key.pem
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: rest-credential
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: rest-credential
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: bearer.txt
+    - secretKey: basic.txt
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: bearer.txt
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: user-credential
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: rest-credential
+  data:
+    - secretKey: usercred
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: creds-client-kafka-sasl-user.txt
+    - secretKey: ca.pem
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca-pem
+    - secretKey: ca.pem-base64
+      remoteRef:
+        key: /cdm-data-pipeline/no-pvs-cfk-credential
+        property: ca.pem-base64

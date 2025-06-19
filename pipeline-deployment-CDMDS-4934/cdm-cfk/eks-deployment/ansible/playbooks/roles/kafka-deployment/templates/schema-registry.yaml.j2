@@ -1,0 +1,51 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: schemaregistry
+  namespace: {{ namespace_name }}
+  annotations:
+    secret.reloader.stakater.com/reload: "mds-client-sr,credential,mds-token"
+spec:
+  image:
+    application: confluentinc/cp-schema-registry:7.8.0
+    init: confluentinc/confluent-init-container:2.10.0
+  license:
+    secretRef: confluent-operator-licensing
+  replicas: 1
+  authorization:
+    type: rbac
+    kafkaRestClassRef:
+      name: default
+  configOverrides:
+    server:
+      - "confluent.schema.registry.anonymous.principal=true"
+      - "authentication.skip.paths=/*"
+    log4j:
+      - "log4j.appender.stdout.layout.ConversionPattern=%d %p %c: [%t]: %m%n"
+  dependencies:
+    kafka:
+      bootstrapEndpoint: kafka.{{ namespace_name }}.svc.cluster.local:9071
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: credential
+      tls:
+        enabled: true
+    mds:
+      endpoint: https://kafka.{{ namespace_name }}.svc.cluster.local:8090
+      tokenKeyPair:
+        secretRef: mds-token
+      authentication:
+        type: bearer
+        bearer:
+          secretRef: mds-client-sr
+      tls:
+        enabled: true
+  podTemplate:
+    annotations:
+      elastic.co/dataset: "schemaregistry.log"
+      elastic.co/namespace: "default"
+      elastic.co/preserve_original_event: "true"
+  tls:
+    secretRef: "schemaregistry-tls"

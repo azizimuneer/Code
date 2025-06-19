@@ -1,0 +1,44 @@
+{{- if or .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled .Values.xyz_cdm_data_pipeline.deploy_environment.eks.enabled -}}
+{{- if .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.name }}
+  namespace: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.namespace }}
+  labels:
+    app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.name }}
+  annotations:
+    {{- toYaml .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.name }}
+    spec:
+      containers:
+        - name: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.name }}
+          image: {{- if .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.image.enabled | default false }} {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.image.repository }}:{{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.image.tag }}{{- else }} {{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}{{- end }}
+          args:
+            {{- range .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.commandArgs }}
+            - {{ . | quote }}
+            {{- end }}
+          envFrom:
+            {{- include "xyz_quality_elastic_sink.envVars" . | nindent 12 }}
+          resources:
+            limits:
+              cpu: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.resources.limits.cpu }}
+              memory: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.resources.requests.cpu }}
+              memory: {{ .Values.xyz_cdm_data_pipeline.xyz_quality_elastic_sink.resources.requests.memory }}
+      restartPolicy: {{ .Values.global.restartPolicy }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+{{- end }}
+{{- end }}

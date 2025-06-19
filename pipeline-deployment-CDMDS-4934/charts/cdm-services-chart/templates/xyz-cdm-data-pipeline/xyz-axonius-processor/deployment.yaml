@@ -1,0 +1,43 @@
+{{- if or .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled .Values.xyz_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.name }}
+  namespace: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.namespace }}
+  labels:
+    app: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.name }}
+  annotations:
+    {{- toYaml .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.name }}
+    spec:
+      containers:
+        - name: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.name }}
+          image: {{- if .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.image.enabled | default false }} {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.image.repository }}:{{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.image.tag }}{{- else }} {{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}{{- end }}
+          args:
+            {{- range .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.commandArgs }}
+            - {{ . | quote }}
+            {{- end }}
+          envFrom:
+            {{- include "xyz_axonius_processor.envVars" . | nindent 12 }}
+          {{- if not .Values.xyz_cdm_data_pipeline.deploy_environment.local.enabled }}
+          resources:
+            limits:
+              cpu: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.resources.limits.cpu }}
+              memory: {{ .Values.xyz_cdm_data_pipeline.xyz_axonius_processor.resources.limits.memory }}
+          {{- end }}
+      restartPolicy: {{ .Values.global.restartPolicy }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
+{{- end }}
+{{- end }}

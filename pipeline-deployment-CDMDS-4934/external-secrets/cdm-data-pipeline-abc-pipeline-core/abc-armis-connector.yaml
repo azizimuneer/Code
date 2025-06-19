@@ -1,0 +1,30 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: abc-armis-connector
+  namespace: abc-armis-connector
+spec:
+  refreshInterval: 60m
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: abc-armis-connector
+    creationPolicy: Owner
+  data:
+  - secretKey: ARMIS_KEY
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: ARMIS_KEY
+  - secretKey: KAFKA_CA_CERT_ENCODED
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_CA_CERT_ENCODED
+  - secretKey: KAFKA_USERNAME
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_ARMISCONNECTOR_USERNAME
+  - secretKey: KAFKA_PASSWORD
+    remoteRef:
+      key: /cdm-data-pipeline/abc/pipeline-core
+      property: KAFKA_ARMISCONNECTOR_PASSWORD

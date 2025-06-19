@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: abc-armis-connector
+  namespace: abc-armis-connector
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+  KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+  ARMIS_URL: "https://armisurl.com/api"
+  ORGANIZATION_ID: "abc"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: abc-armis-connector-cron
+  namespace: abc-armis-connector
+spec:
+  schedule: "0 */6 * * *"
+  jobTemplate:
+    spec:
+      template: 
+        metadata:
+          labels:
+            app: abc-armis-connector
+        spec:
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: ecr-secret
+          containers:
+            - name: abc-armis-connector
+              image: ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipeline-core:IMAGE_TAG
+              imagePullPolicy: Always
+              args: 
+                - "dsp"
+                - "connect" 
+                - "armis"
+              envFrom:
+                - secretRef:
+                    name: abc-armis-connector
+                - configMapRef:
+                    name: abc-armis-connector
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: "3Gi"

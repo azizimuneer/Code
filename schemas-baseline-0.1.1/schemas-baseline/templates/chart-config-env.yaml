@@ -1,0 +1,14 @@
+{{- range .Values.schemas }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .schemaId }}-config"
+  namespace: {{ .namespace }}
+  annotations:
+    "helm.sh/hook-weight": "1"
+data:
+  schema: '{{ .schema }}'
+  schemaRegistryRest.authentication.type: bearer
+  schemaRegistryRest.authentication.bearer.secretRef: rest-credential
+---
+{{- end }}

@@ -1,0 +1,17 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: ConfluentRolebinding
+metadata:
+  name: internal-schemaregistry-schema-validation
+  namespace: cdm-kafka
+spec:
+  clustersScopeByIds:
+    schemaRegistryClusterId: id_schemaregistry_cdm-kafka
+  principal:
+    name: ANONYMOUS
+    type: user
+  resourcePatterns:
+  - name: "*"
+    patternType: LITERAL
+    resourceType: Subject
+  role: DeveloperRead
+

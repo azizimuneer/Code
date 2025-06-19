@@ -1,0 +1,199 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: cdm-kafka
+  annotations:
+    secret.reloader.stakater.com/reload: "credential"
+spec:
+  license:
+    secretRef: confluent-operator-licensing
+  authorization:
+    superUsers:
+      - User:kafka
+      - User:mds
+      - User:operator
+    type: rbac
+  configOverrides:
+    log4j:
+      - "log4j.appender.stdout.layout.ConversionPattern=%d %p %c: [%t]: %m%n"
+  dataVolumeCapacity: 20G
+  image:
+    application: docker.io/confluentinc/cp-server:7.8.0
+    init: confluentinc/confluent-init-container:2.10.0
+  listeners:
+    controller:
+      authentication:
+        jaasConfig:
+          secretRef: credential
+        type: plain
+      tls:
+        enabled: true
+  replicas: 3
+  podTemplate:
+    annotations:
+      elastic.co/dataset: "kraft.log"
+      elastic.co/namespace: "default"
+      elastic.co/preserve_original_event: "true"
+  tls:
+    secretRef: kraftcontroller-tls
+  dependencies:
+    mdsKafkaCluster:
+      bootstrapEndpoint: kafka.cdm-kafka.svc.cluster.local:9092
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: credential
+      tls:
+        enabled: true
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: cdm-kafka
+  annotations:
+    secret.reloader.stakater.com/reload: "mds-client-erp,credential,mds-token"
+spec:
+  license:
+    secretRef: confluent-operator-licensing
+  replicas: 3
+  oneReplicaPerNode: true
+  rackAssignment:
+    nodeLabels:
+    - topology.kubernetes.io/zone
+  dataVolumeCapacity: 100Gi
+  configOverrides:
+    server:
+      - "message.max.bytes=10485760"
+      - "replica.fetch.max.bytes=10485760"
+      - "socket.receive.buffer.bytes=8388608"
+      - "socket.send.buffer.bytes=8388608"
+      - "auto.create.topics.enable=false"
+    jvm:
+      - "-XX:+UseContainerSupport"
+      - "-XX:MaxRAMPercentage=50.0"
+    log4j:
+      # Standard Kafka:
+      # - "log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n"
+      # CFK Default:
+      # - log4j.appender.stdout.layout.ConversionPattern=[%p] %d [%t] %c %M - %m%n
+      # Elastic Search integration
+      - "log4j.appender.stdout.layout.ConversionPattern=%d %p %c: [%t]: %m%n"
+  authorization:
+    superUsers:
+      - User:kafka
+      - User:mds
+      - User:operator
+    type: rbac
+  dependencies:
+    kRaftController:
+      clusterRef:
+        name: kraftcontroller
+      controllerListener:
+        authentication:
+          jaasConfig:
+            secretRef: credential
+          type: plain
+        tls:
+          enabled: true
+    kafkaRest:
+      authentication:
+        bearer:
+          secretRef: mds-client-erp
+        type: bearer
+  image:
+    application: docker.io/confluentinc/cp-server:7.8.0
+    init: confluentinc/confluent-init-container:2.10.0
+  listeners:
+    internal:
+      authentication:
+        type: plain
+        jaasConfig:
+          secretRef: credential
+      tls:
+        enabled: true
+    external:
+      #externalAccess:
+      #  type: loadBalancer
+      #  loadBalancer:
+      #    domain: betsie.lab
+      #    externalTrafficPolicy: Cluster
+      authentication:
+        jaasConfig:
+          secretRef: credential
+        type: plain
+      tls:
+        enabled: true
+    replication:
+      authentication:
+        jaasConfig:
+          secretRef: credential
+        type: plain
+      tls:
+        enabled: true
+  services:
+    mds:
+      #externalAccess:
+      #  type: loadBalancer
+      #  loadBalancer:
+      #    domain: betsie.lab
+      #    prefix: mds
+      provider:
+        ldap:
+          address: ldap://ldap.cdm-kafka.svc.cluster.local:389
+          authentication:
+            simple:
+              secretRef: credential
+            type: simple
+          configurations:
+            groupMemberAttribute: member
+            groupMemberAttributePattern: CN=(.*),DC=cdm,DC=gov
+            groupNameAttribute: cn
+            groupObjectClass: group
+            groupSearchBase: dc=cdm,dc=gov
+            userMemberOfAttributePattern: CN=(.*),DC=cdm,DC=gov
+            userNameAttribute: cn
+            userObjectClass: organizationalRole
+            userSearchBase: dc=cdm,dc=gov
+          tls:
+            enabled: true
+        type: ldap
+      tls:
+        enabled: true
+      tokenKeyPair:
+        secretRef: mds-token
+  podTemplate:
+    serviceAccountName: "kafka"
+    # The constraint section below spreads broker deployments across AZ zone
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: "topology.kubernetes.io/zone"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app: kafka
+    annotations:
+      elastic.co/dataset: "kafka.log"
+      elastic.co/namespace: "default"
+      elastic.co/preserve_original_event: "true"
+  tls:
+    secretRef: kafka-tls
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaRestClass
+metadata:
+  name: default
+  namespace: cdm-kafka
+  annotations:
+    secret.reloader.stakater.com/reload: "rest-credential"
+spec:
+  kafkaClusterRef:
+    name: kafka
+    namespace: cdm-kafka
+  kafkaRest:
+    authentication:
+      type: bearer
+      bearer:
+        secretRef: rest-credential

@@ -1,0 +1,18 @@
+- name: Ensure LDAP namespace exists
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ namespace_name }}"
+
+- name: Install LDAP
+  kubernetes.core.helm:
+    name: "{{ ldap_release_name }}"
+    chart_ref: "{{ helm_chart_path }}"
+    release_namespace: "{{ namespace_name }}"
+    values_files:
+      - "{{ ldap_values_file }}"
+    state: present
+    wait: true

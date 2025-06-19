@@ -1,0 +1,24 @@
+global:
+  aws: 
+    accountId: "ACCOUNTID"
+    region: "us-gov-east-1"
+  
+  preInstallNamespaces:
+    - abc-armis-connector
+    - abc-armis-processor
+    - abc-cdm-processor
+    - abc-quality-cdm-processor
+    - abc-elastic-sink
+    - abc-quality-elastic-sink
+    - xyz-axonius-connector
+    - xyz-axonius-processor
+    - xyz-cdm-processor
+    - xyz-quality-cdm-processor
+    - xyz-elastic-sink
+    - xyz-quality-elastic-sink
+    - cdm-dictionary-connector
+    - argocd
+    - reloader
+    - cdm-kafka
+    - external-secrets
+    - elastic-system

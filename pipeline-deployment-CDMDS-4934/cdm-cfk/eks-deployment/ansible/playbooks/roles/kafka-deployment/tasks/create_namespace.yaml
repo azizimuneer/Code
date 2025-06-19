@@ -1,0 +1,18 @@
+# Checks namespace presence
+- name: Check if namespace exists
+  kubernetes.core.k8s_info:
+    kind: Namespace
+    name: "{{ namespace_name }}"
+  register: ns_info
+  ignore_errors: true
+
+#namespace creation
+- name: Create Namespace
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ namespace_name }}"
+  when: ns_info.resources | length == 0

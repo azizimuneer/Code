@@ -1,0 +1,18 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mds-client-connect
+  namespace: cdm-kafka
+spec:
+  refreshInterval: "60m"
+  secretStoreRef:
+    name: aws-cluster-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: mds-client-connect
+  data:
+    - secretKey: bearer.txt
+      remoteRef:
+        key: /cdm-data-pipeline/cfk-credential
+        property: connect-mds-client.txt

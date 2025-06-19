@@ -1,0 +1,202 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="26.1.0">
+  <diagram name="Page-1" id="HZH6jmIvYHRdL-Vk9gZi">
+    <mxGraphModel dx="2524" dy="738" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="NFr5SC82_hkDiY7eywrT-1" value="" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=light-dark(#99CCFF,var(--ge-dark-color, #121212));" parent="1" vertex="1">
+          <mxGeometry x="-110" y="100" width="410" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-40" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-2" target="NFr5SC82_hkDiY7eywrT-4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#CCFFE6,var(--ge-dark-color, #121212));" parent="1" vertex="1">
+          <mxGeometry x="380" y="90" width="820" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-3" value="" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=light-dark(#FFCC99,var(--ge-dark-color, #121212));" parent="1" vertex="1">
+          <mxGeometry x="630" y="390" width="380" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-31" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="795" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="NFr5SC82_hkDiY7eywrT-4" target="NFr5SC82_hkDiY7eywrT-24" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-4" value="Push it to JFROG Artifactory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#CCE5FF,var(--ge-dark-color, #121212));" parent="1" vertex="1">
+          <mxGeometry x="690" y="310" width="210" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-6" target="NFr5SC82_hkDiY7eywrT-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-6" target="NFr5SC82_hkDiY7eywrT-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-6" value="Gihub Repo" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="170" y="150" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-9" target="NFr5SC82_hkDiY7eywrT-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-9" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-50" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-5" value="Dev Pushes the code" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-40" y="160" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-13" value="Security scan" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="870" y="200" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-14" value="Untit tests" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1020" y="200" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-48" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="NFr5SC82_hkDiY7eywrT-15" target="NFr5SC82_hkDiY7eywrT-23" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="250" as="sourcePoint" />
+            <mxPoint x="360" y="355" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="780" y="250" />
+              <mxPoint x="450" y="250" />
+              <mxPoint x="450" y="288" />
+              <mxPoint x="240" y="288" />
+              <mxPoint x="240" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-15" value="Code Quality" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="200" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-17" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#CCE5FF,var(--ge-dark-color, #121212));" parent="1" vertex="1">
+          <mxGeometry x="620" y="110" width="250" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-16" value="Build Docker image" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="200" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-18" value="Jenkins CI Pipeline triggered" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="625" y="135" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-22" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-10" y="320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-23" value="Sonar Qube" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="10" y="335" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-24" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-10" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-25" value="JFrog/ECR" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="11" y="435" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-26" target="NFr5SC82_hkDiY7eywrT-27" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-26" value="Update deployment manifest in GIT repo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="700" y="435" width="225" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-30" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="NFr5SC82_hkDiY7eywrT-27" target="NFr5SC82_hkDiY7eywrT-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-27" value="Argo CD watches Git Repo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="690" y="550" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-28" value="ArgoCD deploys to EKS" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="685" y="690" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-12" value="Lint" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="580" y="200" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-50" value="" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="449" y="177.5" as="sourcePoint" />
+            <mxPoint x="1109" y="178" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="1109" y="172.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-51" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="510" y="180" as="sourcePoint" />
+            <mxPoint x="510" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-52" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="642" y="179" as="sourcePoint" />
+            <mxPoint x="642" y="199" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-53" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="776" y="178" as="sourcePoint" />
+            <mxPoint x="776" y="198" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-54" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="934" y="178" as="sourcePoint" />
+            <mxPoint x="934" y="198" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="NFr5SC82_hkDiY7eywrT-55" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1077" y="178" as="sourcePoint" />
+            <mxPoint x="1077" y="198" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-25" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-1" target="km5K3Yq4NgVWrZ-xm9mq-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-1" value="Dev Pushes code to main Repo&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-10" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-4" target="km5K3Yq4NgVWrZ-xm9mq-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-4" target="km5K3Yq4NgVWrZ-xm9mq-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-4" value="Lint the code and check for errors" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-7" target="km5K3Yq4NgVWrZ-xm9mq-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-7" target="km5K3Yq4NgVWrZ-xm9mq-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-7" value="Security and code Qulaity" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="390" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-9" value="Tools: TFLint" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-11" value="Tools: TFsecure ??/ SonarQube" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="390" y="800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-13" target="km5K3Yq4NgVWrZ-xm9mq-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-13" value="TF Plan and update / generate artifacts in GH" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="590" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-15" target="km5K3Yq4NgVWrZ-xm9mq-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-15" value="Approve Artifacts ( Code and Cost projection artifacts)" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="940" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-17" value="TF apply and commit" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="km5K3Yq4NgVWrZ-xm9mq-19" target="km5K3Yq4NgVWrZ-xm9mq-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="km5K3Yq4NgVWrZ-xm9mq-19" value="InfraCost installation CLI&amp;nbsp; and generate Cost report" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="790" y="940" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

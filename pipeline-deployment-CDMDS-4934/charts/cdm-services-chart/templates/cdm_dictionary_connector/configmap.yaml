@@ -1,0 +1,13 @@
+{{- if or .Values.cdm_dictionary_connector.deploy_environment.local.enabled .Values.cdm_dictionary_connector.deploy_environment.eks.enabled }}
+{{- if .Values.cdm_dictionary_connector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.cdm_dictionary_connector.name }}
+  namespace: {{ .Values.cdm_dictionary_connector.namespace }}
+data:
+  {{- range $key, $value := .Values.cdm_dictionary_connector.config }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
+{{- end }}
+{{- end }}

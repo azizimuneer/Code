@@ -1,0 +1,13 @@
+{{- if or .Values.abc_cdm_data_pipeline.deploy_environment.local.enabled .Values.abc_cdm_data_pipeline.deploy_environment.eks.enabled }}
+{{- if .Values.abc_cdm_data_pipeline.abc_armis_processor.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.abc_cdm_data_pipeline.abc_armis_processor.name }}
+  namespace: {{ .Values.abc_cdm_data_pipeline.abc_armis_processor.namespace }}
+data:
+  {{- range $key, $value := .Values.abc_cdm_data_pipeline.abc_armis_processor.config }}
+  {{ $key }}: "{{ $value }}"
+  {{- end }}
+{{- end }}
+{{- end }}

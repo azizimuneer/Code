@@ -1,0 +1,183 @@
+global:
+  restartPolicy: Always
+  imagePullSecrets:
+    - name: ecr-secret
+  image:
+    repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+    tag: "latest"
+
+abc_cdm_data_pipeline:
+  deploy_environment:
+    local:
+      enabled: true
+    eks:
+      enabled: false
+
+  abc_armis_connector:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    replicaCount: 1
+    name: abc-armis-connector
+    namespace: abc-armis-connector-helm
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+  
+  abc_armis_processor:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed  
+    name: "abc-armis-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "abc-armis-processor-helm"
+    replicaCount: 1
+
+  abc_cdm_processor:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed    
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: abc-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-cdm-role
+    name: "abc-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "abc-cdm-processor-helm"
+    replicaCount: 1
+ 
+  abc_elastic_sink:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    name: "abc-elastic-sink"
+    namespace: "abc-elastic-sink-helm"
+    replicaCount: 1
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+
+  abc_quality_cdm_processor:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    serviceAccount:
+      create: true # true to create the serviceAccount for the deployment, set false to prevent the creation of serviceAccountName for the deployment
+      enabled: true   # true to use serviceAccountName in the deployment, set false to prevent the use of serviceAccountName in the deployment
+      name: abc-quality-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/abc-cdm-role
+    name: "abc-quality-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "abc-quality-cdm-processor-helm"
+    replicaCount: 1
+
+  abc_quality_elastic_sink:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    name: "abc-quality-elastic-sink"
+    namespace: "abc-quality-elastic-sink-helm"
+    replicaCount: 1
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+
+xyz_cdm_data_pipeline:
+  deploy_environment:
+    local:
+      enabled: true
+    eks:
+      enabled: true
+
+  xyz_axonius_connector:
+    enabled: false  # true to deploy this service, set false to prevent this service from being deployed
+    replicaCount: 1
+    name: xyz-axonius-connector
+    namespace: xyz-axonius-connector-helm
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+
+  xyz_axonius_processor:
+    enabled: true
+    name: "xyz-axonius-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-axonius-processor-helm"
+    replicaCount: 1
+
+  xyz_cdm_processor:
+    enabled: true
+    serviceAccount:
+      create: true
+      enabled: true
+      name: xyz-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/dictionary-connector-role
+    name: "xyz-cdm-processor"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-cdm-processor-helm"
+    replicaCount: 1
+
+  xyz_elastic_sink:
+    enabled: true
+    namespace: "xyz-elastic-sink-helm"
+    replicaCount: 1
+    image:
+      enabled: false
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+
+  xyz_quality_cdm_processor:
+    enabled: true
+    serviceAccount:
+      create: true
+      enabled: true
+      name: xyz-quality-cdm-processor-sa
+      roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/dictionary-connector-role
+    name: "xyz-quality-cdm-processor-helm"
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+    namespace: "xyz-quality-cdm-processor-helm"
+    replicaCount: 1
+
+  xyz_quality_elastic_sink:
+    enabled: true  # true to deploy this service, set false to prevent this service from being deployed
+    name: "xyz-quality-elastic-sink"
+    namespace: "xyz-quality-elastic-sink"
+    replicaCount: 1
+    image:
+      enabled: false  # default: false to use global image, set true to override
+      repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+      tag: "latest"
+
+cdm_dictionary_connector:
+  deploy_environment:
+    local:
+      enabled: true
+    eks:
+      enabled: true
+  
+  enabled: false
+  replicaCount: 1
+  name: cdm-dictionary-connector
+  namespace: cdm-dictionary-connector-helm
+  serviceAccount:
+    create: true
+    enabled: true
+    name: cdm-dictionary-connector-sa
+    roleArn: arn:aws-us-gov:iam::ACCOUNTID:role/cdm-dictionary-connector-role
+  image:
+    enabled: false
+    repository: "ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipe/pipeline-core"
+    tag: "latest"
+  cronJob:
+    schedule: "* * */1 * *"

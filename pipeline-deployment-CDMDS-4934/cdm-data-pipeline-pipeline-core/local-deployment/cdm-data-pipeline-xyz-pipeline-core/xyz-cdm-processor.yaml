@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xyz-cdm-processor-sa
+  namespace: xyz-cdm-processor
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws-us-gov:iam::283857190015:role/xyz-cdm-role
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xyz-cdm-processor
+  namespace: xyz-cdm-processor
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka.cdm-kafka.svc.cluster.local:9071"
+  KAFKA_SCHEMA_REGISTRY: "https://schemaregistry.cdm-kafka.svc.cluster.local:8081"
+  CACHE_CONNECTION_URL: "valkeys://testcvecaws.com:6379"
+  ORGANIZATION_ID: "xyz"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xyz-cdm-processor
+  namespace: xyz-cdm-processor
+  labels:
+    app: xyz-cdm-processor
+  annotations:
+    configmap.reloader.stakater.com/reload: "xyz-cdm-processor"
+    secret.reloader.stakater.com/reload: "xyz-cdm-processor"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xyz-cdm-processor
+  template:
+    metadata:
+      labels:
+        app: xyz-cdm-processor
+    spec:
+      serviceAccountName: xyz-cdm-processor-sa
+      containers:
+        - name: xyz-cdm-processor
+          image: ACCOUNTID.dkr.ecr.us-gov-east-1.amazonaws.com/pipeline/pipeline-core:pvs1.0
+          args: 
+            - "dsp"
+            - "process"
+            - "cdm"
+            - "--group"
+            - "process-cdm"
+            - "--cache"
+            - "valkey"
+          envFrom:
+            - secretRef:
+                name: xyz-cdm-processor
+            - configMapRef:
+                name: xyz-cdm-processor
+          resources:
+             limits:
+               cpu: "1"
+               memory: "3Gi"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: ecr-secret
